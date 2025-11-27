@@ -1,0 +1,28 @@
+name: CI/CD Pipeline
+
+on:
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    container:
+      image: eclipse-temurin:21-jdk
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Maven Wrapper permissions
+        run: chmod +x ./mvnw
+
+      - name: Build and test with Maven
+        run: ./mvnw clean compile test package -B
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: application-jar
+          path: target/*.jar
+          retention-days: 7
