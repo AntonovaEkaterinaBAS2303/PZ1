@@ -8,21 +8,21 @@ jobs:
   build:
     runs-on: ubuntu-latest
     container:
-      image: eclipse-temurin:21-jdk
-
+      image: maven:3.9-eclipse-temurin-21
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Set up Maven Wrapper permissions
-        run: chmod +x ./mvnw
+      - name: Verify environment
+        run: |
+          java -version
+          mvn --version
 
-      - name: Build and test with Maven
-        run: ./mvnw clean compile test package -B
-
-      - name: Upload build artifacts
+      - name: Build with Maven
+        run: mvn clean compile test package
+      - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: application-jar
+          name: build-artifacts
           path: target/*.jar
           retention-days: 7
